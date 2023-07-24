@@ -67,5 +67,7 @@ class ChatConsumer(WebsocketConsumer):
         self.add_to_history(message_obj)
 
     def add_to_history(self, message_obj):
-        self.scope['session']['message_history'].append(message_obj)
+        message_history = self.scope['session'].get('message_history', [])
+        message_history.append(message_obj)
+        self.scope['session']['message_history'] = message_history
         self.scope['session'].save()
