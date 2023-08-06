@@ -9,7 +9,7 @@ def generate_bot_responses(message, session):
     if not current_question_id:
         bot_responses.append(BOT_WELCOME_MESSAGE)
 
-    success, error = record_current_answer(message, current_question_id)
+    success, error = record_current_answer(message, current_question_id, session)
 
     if not success:
         return [error]
@@ -28,9 +28,9 @@ def generate_bot_responses(message, session):
     return bot_responses
 
 
-def record_current_answer(answer, current_question_id):
+def record_current_answer(answer, current_question_id, session):
     '''
-    Validates and stores the answer for the current question to session.
+    Validates and stores the answer for the current question to django session.
     '''
     return True, ""
 
