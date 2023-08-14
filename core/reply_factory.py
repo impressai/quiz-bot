@@ -32,13 +32,29 @@ def record_current_answer(answer, current_question_id, session):
     '''
     Validates and stores the answer for the current question to django session.
     '''
-    return True, ""
+    if  not answer:
+        return False, "No answer  provided for this question" 
+    else:
+        if answer not in session:
+            session['answer']={}
+            session['answer'][current_question_id]=answer
+            session.save()
+    return True, "answer is saved"
 
 
 def get_next_question(current_question_id):
     '''
     Fetches the next question from the PYTHON_QUESTION_LIST based on the current_question_id.
     '''
+    for i, question in enumerate(PYTHON_QUESTION_LIST):
+            if question['id'] == current_question_id:
+                data = i + 1
+            if data < len(PYTHON_QUESTION_LIST):
+                next_question = PYTHON_QUESTION_LIST[data]
+                return next_question['question'], next_question['id']
+            else:
+                return None
+    return None
 
     return "dummy question", -1
 
