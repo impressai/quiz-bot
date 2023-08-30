@@ -32,7 +32,15 @@ def record_current_answer(answer, current_question_id, session):
     '''
     Validates and stores the answer for the current question to django session.
     '''
+    # Validate the answer (add your validation logic here)
+    if answer is None or answer == "":
+        return False, "Answer cannot be empty."
+
+    # Store the answer in the Django session
+    session["answers"][current_question_id] = answer
+
     return True, ""
+    
 
 
 def get_next_question(current_question_id):
@@ -40,7 +48,21 @@ def get_next_question(current_question_id):
     Fetches the next question from the PYTHON_QUESTION_LIST based on the current_question_id.
     '''
 
-    return "dummy question", -1
+    PYTHON_QUESTION_LIST = [
+        {'question_id': 1, 'question_text': 'Question 1'},
+        {'question_id': 2, 'question_text': 'Question 2'},
+        {'question_id': 3, 'question_text': 'Question 3'},
+        # Add more questions as needed
+    ]
+
+    # Check if the current_question_id is within the valid range
+    if current_question_id < 0 or current_question_id >= len(PYTHON_QUESTION_LIST):
+        return None, -1  # Return None and -1 to indicate no more questions
+
+    # Fetch the next question based on the current_question_id
+    next_question = PYTHON_QUESTION_LIST[current_question_id]
+
+    return next_question, current_question_id + 1
 
 
 def generate_final_response(session):
@@ -49,4 +71,31 @@ def generate_final_response(session):
     by the user for questions in the PYTHON_QUESTION_LIST.
     '''
 
-    return "dummy result"
+     # Define the PYTHON_QUESTION_LIST
+    PYTHON_QUESTION_LIST = [
+        {'question_id': 1, 'question_text': 'Question 1', 'correct_answer': 'A'},
+        {'question_id': 2, 'question_text': 'Question 2', 'correct_answer': 'B'},
+        {'question_id': 3, 'question_text': 'Question 3', 'correct_answer': 'C'},
+        # Add more questions as needed
+    ]
+
+    # Initialize the score
+    score = 0
+
+    # Iterate over the questions and check the user's answers
+    for question in PYTHON_QUESTION_LIST:
+        question_id = question['question_id']
+        correct_answer = question['correct_answer']
+
+        # Check if the user answered this question
+        if question_id in session['answers']:
+            user_answer = session['answers'][question_id]
+
+            # Check if the user's answer is correct
+            if user_answer == correct_answer:
+                score += 1
+
+    # Create the final result message
+    result_message = f"Your score is {score}/{len(PYTHON_QUESTION_LIST)}."
+
+    return result_message
