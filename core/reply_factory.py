@@ -32,6 +32,12 @@ def record_current_answer(answer, current_question_id, session):
     '''
     Validates and stores the answer for the current question to django session.
     '''
+    que = PYTHON_QUESTION_LIST[current_question_id]
+    answer = answer.strip()
+    if not 'user_resp' in session:
+        session['user_resp'] = {}
+    session['user_resp'][current_question_id] = que['answer'] == answer, answer
+    session.save()
     return True, ""
 
 
@@ -39,8 +45,11 @@ def get_next_question(current_question_id):
     '''
     Fetches the next question from the PYTHON_QUESTION_LIST based on the current_question_id.
     '''
+    if current_question_id == (len(PYTHON_QUESTION_LIST) - 1):
+        return None, None
+    que = PYTHON_QUESTION_LIST[current_question_id + 1]
 
-    return "dummy question", -1
+    return que['question_text'], current_question_id + 1
 
 
 def generate_final_response(session):
@@ -48,5 +57,9 @@ def generate_final_response(session):
     Creates a final result message including a score based on the answers
     by the user for questions in the PYTHON_QUESTION_LIST.
     '''
-
-    return "dummy result"
+    score = 0
+    user_resp = session['user_resp']
+    for qid in user_resp:
+        if user_resp[qid][0] == True:
+            score += 1
+    return f"User Score: {score} correct out of {len(PYTHON_QUESTION_LIST)}"
