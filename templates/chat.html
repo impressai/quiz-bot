@@ -61,6 +61,33 @@
             margin-left: 10px;
             cursor: pointer;
         }
+        #option-container{
+            background-color: black;
+            color: white;
+            min-height: 50px;
+            padding: 0 8px;
+            
+
+            display: none;
+            align-items: center;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            gap: 10px;
+        }
+        #option-container .option-item{
+            padding: 5px 10px;
+            box-sizing: border-box;
+            background: #0096C7;
+            color: white;
+            border-radius: 6px;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            display: block;
+
+            width: 350px;
+            min-width: fit-content;
+        }
     </style>
 </head>
 <body>
@@ -72,12 +99,20 @@
                     <div class="message-text">{{message.text}}</div>
                 </li>
                 {% else %}
-                <li class="message bot-message">
-                    <div class="message-text">{{message.text}}</div>
-                </li>
+                    {% if message.question_text %}
+                        <li class="message bot-message">
+                            <div class="message-text">{{message.question_text}}</div>
+                        </li>
+                    {% else %}
+                        <li class="message bot-message">
+                            <div class="message-text">{{message.text}}</div>
+                        </li>
+                    {% endif %}
                 {% endif %}
             {% endfor %}
         </ul>
+        <div id="option-container">
+        </div>
         <div class="input-container">
             <input type="text" class="input-box" id="input-box" placeholder="Type your message...">
             <button class="send-button" id="send-button">Send</button>
@@ -118,6 +153,9 @@
                 'message': userMessage
             }));
             inputBox.value = '';
+
+            const optionContainer = document.getElementById('option-container')
+            optionContainer.style.display = 'none';
         };
 
         document.querySelector('#reset-button').onclick = function(e) {
@@ -130,13 +168,45 @@
     // Function to add a new message to the chat container
     function addMessage(text, isUser = false) {
         const chatMessages = document.getElementById('chat-messages');
+        const optionContainer = document.getElementById('option-container')
         const messageClass = isUser ? 'user-message' : 'bot-message';
-        const messageText = `
-            <li class="message ${messageClass}">
-                <div class="message-text">${text}</div>
-            </li>
-        `;
-        chatMessages.insertAdjacentHTML('beforeend', messageText);
+
+        if (typeof text == 'string'){
+            const messageText = `
+                <li class="message ${messageClass}">
+                    <div class="message-text">${text}</div>
+                </li>
+            `;
+            chatMessages.insertAdjacentHTML('beforeend', messageText);
+        } else {
+            const messageText = `
+                <li class="message ${messageClass}">
+                    <div class="message-text">${text.question_text}</div>
+                </li>
+            `;
+            chatMessages.insertAdjacentHTML('beforeend', messageText);
+
+            const options = text.options
+            optionContainer.innerHTML = ''
+            options.forEach(function (item){
+                const button = document.createElement('button');
+                button.className = 'option-item';
+                button.textContent = item;
+
+                optionContainer.appendChild(button);
+            })
+
+            optionContainer.style.display = 'flex';
+
+            var optionItems = document.querySelectorAll('.option-item');
+            var inputBox = document.getElementById('input-box');
+
+            optionItems.forEach(function (item) {
+                item.addEventListener('click', function () {
+                    inputBox.value = item.textContent;
+                });
+            });
+        }
     }
 
     // Function to handle user message submission
