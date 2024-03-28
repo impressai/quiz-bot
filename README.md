@@ -2,7 +2,7 @@
 This is a basic version of an interactive quiz bot that engages users in quizzes, evaluates their responses, and provides a final score based on their answers. In this we use Django channels websocket communication, redis as message broker, and Django sessions for temporary data storage.
 
 
-Steps to run the project with Docker
+Steps to run the project with Docke
 
 1. Install Docker and Docker Compose (https://docs.docker.com/compose/install/)
 2. Docker should be running
