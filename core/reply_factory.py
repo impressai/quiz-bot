@@ -32,15 +32,27 @@ def record_current_answer(answer, current_question_id, session):
     '''
     Validates and stores the answer for the current question to django session.
     '''
-    return True, ""
+    current_question = PYTHON_QUESTION_LIST[current_question_id]
+    correct_answer = current_question['answer']
+
+    if answer.lower() == correct_answer.lower():
+        session['score'] = session.get('score', 0) + 1
+        return True, "Correct!"
+    else:
+        return False, f"Sorry, the correct answer is {correct_answer}."
 
 
 def get_next_question(current_question_id):
     '''
     Fetches the next question from the PYTHON_QUESTION_LIST based on the current_question_id.
     '''
+    if current_question_id < len(PYTHON_QUESTION_LIST) - 1:
+        next_question_id = current_question_id + 1
+        next_question = PYTHON_QUESTION_LIST[next_question_id]['question']
+        return next_question, next_question_id
+    else:
+        return None, -1
 
-    return "dummy question", -1
 
 
 def generate_final_response(session):
@@ -48,5 +60,13 @@ def generate_final_response(session):
     Creates a final result message including a score based on the answers
     by the user for questions in the PYTHON_QUESTION_LIST.
     '''
+    score = session.get('score', 0)
+    total_questions = len(PYTHON_QUESTION_LIST)
+    percentage = (score / total_questions) * 100
 
-    return "dummy result"
+    if percentage >= 80:
+        result_message = "Congratulations! You scored {}% and passed the quiz!".format(percentage)
+    else:
+        result_message = "Sorry, you scored {}% and didn't pass the quiz. Better luck next time!".format(percentage)
+
+    return result_message
