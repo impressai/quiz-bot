@@ -36,11 +36,27 @@ def record_current_answer(answer, current_question_id, session):
 
 
 def get_next_question(current_question_id):
-    '''
+    """
     Fetches the next question from the PYTHON_QUESTION_LIST based on the current_question_id.
-    '''
-
-    return "dummy question", -1
+    """
+    from .constants import PYTHON_QUESTION_LIST  # Import the question list if not already imported
+    
+    # Find the index of the current question in the list
+    current_index = -1
+    for index, question in enumerate(PYTHON_QUESTION_LIST):
+        if question['id'] == current_question_id:
+            current_index = index
+            break
+    
+    # If current question ID is not found or is the last question, return None
+    if current_index == -1 or current_index == len(PYTHON_QUESTION_LIST) - 1:
+        return None, None
+    
+    # Otherwise, return the next question and its ID
+    next_question = PYTHON_QUESTION_LIST[current_index + 1]['question']
+    next_question_id = PYTHON_QUESTION_LIST[current_index + 1]['id']
+    
+    return next_question, next_question_id
 
 
 def generate_final_response(session):
