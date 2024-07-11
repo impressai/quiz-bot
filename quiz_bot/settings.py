@@ -96,7 +96,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("redis", 6379)],
+            "hosts": [('127.0.0.1', 6379)],
         },
     },
 }
@@ -105,16 +105,28 @@ CHANNEL_LAYERS = {
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',#env('DB_ENGINE', 'django.db.backends.postgresql'),
+#         'NAME': env('DB_NAME', 'postgres'),
+#         'USER': env('DB_USER', 'postgres'),
+#         'PASSWORD': env('DB_PASSWORD', 'password'),
+#         'HOST': env('DB_HOST', 'db'),
+#         'PORT': env('DB_PORT', '5432'),
+#     }
+# }
 DATABASES = {
     'default': {
-        'ENGINE': env('DB_ENGINE', 'django.db.backends.postgresql'),
-        'NAME': env('DB_NAME', 'postgres'),
-        'USER': env('DB_USER', 'postgres'),
-        'PASSWORD': env('DB_PASSWORD', 'password'),
-        'HOST': env('DB_HOST', 'db'),
-        'PORT': env('DB_PORT', '5432'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'quizbot',
+        'USER': 'postgres',
+        'PASSWORD': '#chussarang',
+        'HOST': 'localhost',  
+        'PORT': '5433',        
     }
 }
+
 
 
 # Password validation
