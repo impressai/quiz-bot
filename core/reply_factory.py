@@ -29,10 +29,32 @@ def generate_bot_responses(message, session):
 
 
 def record_current_answer(answer, current_question_id, session):
-    '''
-    Validates and stores the answer for the current question to django session.
-    '''
+    """
+    Validates and stores the answer for the current question in the Django session.
+    """
+    from .constants import PYTHON_QUESTION_LIST  # Import the question list if not already imported
+    
+    # Retrieve the current question from the question list based on question ID
+    current_question = None
+    for question in PYTHON_QUESTION_LIST:
+        if question['id'] == current_question_id:
+            current_question = question
+            break
+    
+    if not current_question:
+        return False, "Current question not found"
+
+    # Perform validation of the user's answer
+    expected_answer = current_question['correct_answer']
+    if answer.strip().lower() != expected_answer.strip().lower():
+        return False, "Incorrect answer. Please try again."
+
+    # Store the validated answer in the session
+    session['answers'][current_question_id] = answer.strip()
+    session.modified = True  # Ensure the session is marked as modified
+    
     return True, ""
+
 
 
 def get_next_question(current_question_id):
