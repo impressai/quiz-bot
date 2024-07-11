@@ -44,9 +44,32 @@ def get_next_question(current_question_id):
 
 
 def generate_final_response(session):
-    '''
+    """
     Creates a final result message including a score based on the answers
     by the user for questions in the PYTHON_QUESTION_LIST.
-    '''
-
-    return "dummy result"
+    """
+    from .constants import PYTHON_QUESTION_LIST  # Import the question list if not already imported
+    
+    answers = session.get('answers', {})  # Retrieve answers stored in session
+    total_questions = len(PYTHON_QUESTION_LIST)
+    correct_answers_count = 0
+    
+    # Calculate number of correct answers
+    for question in PYTHON_QUESTION_LIST:
+        question_id = question['id']
+        if question_id in answers:
+            user_answer = answers[question_id]
+            expected_answer = question['correct_answer']
+            if user_answer.strip().lower() == expected_answer.strip().lower():
+                correct_answers_count += 1
+    
+    # Calculate performance based on correct answers
+    score = (correct_answers_count / total_questions) * 100
+    
+    # Generate final response message based on performance
+    if score >= 70:
+        final_response = f"Congratulations! You scored {score}% and passed the quiz."
+    else:
+        final_response = f"Sorry, you scored {score}%. Please review and try again."
+    
+    return final_response
