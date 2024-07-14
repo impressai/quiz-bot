@@ -28,7 +28,12 @@ def generate_bot_responses(message, session):
     return bot_responses
 
 
-def record_current_answer(answer, current_question_id, session):
+def record_current_answer(answer, current_question_id):
+    if user_answer in correct_answer:
+        recorded_answers.append(user_answer)
+        return True
+    else:
+        return False
     '''
     Validates and stores the answer for the current question to django session.
     '''
@@ -36,6 +41,10 @@ def record_current_answer(answer, current_question_id, session):
 
 
 def get_next_question(current_question_id):
+    if current_question_id<len(quiz_questions):
+        return quiz_questions[current_question_id]
+    else:
+        return None
     '''
     Fetches the next question from the PYTHON_QUESTION_LIST based on the current_question_id.
     '''
@@ -44,6 +53,11 @@ def get_next_question(current_question_id):
 
 
 def generate_final_response(session):
+    score=calculate_score(correct_answer, recorded_answers)
+    if score>=passing_score:
+        return f"Congratulating! You scored {score}/{len(correct_answers)}.You passed!"
+    else:
+        return f"Your score is {score}/{len(correct_answers)}.Better luck next time!"
     '''
     Creates a final result message including a score based on the answers
     by the user for questions in the PYTHON_QUESTION_LIST.
