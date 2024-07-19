@@ -28,11 +28,15 @@ def generate_bot_responses(message, session):
     return bot_responses
 
 
-def record_current_answer(answer, current_question_id, session):
-    '''
-    Validates and stores the answer for the current question to django session.
-    '''
-    return True, ""
+def record_current_answer(user_response, correct_answer, user_data):
+    # Validate the user's response
+    if user_response.lower() == correct_answer.lower():
+        user_data['score'] += 1
+
+    # Store the user's answer
+    user_data['answers'].append(user_response)
+    
+    return user_data
 
 
 def get_next_question(current_question_id):
