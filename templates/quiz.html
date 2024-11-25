@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Python Quiz</title>
+     <link rel="icon" type="images/png" href="./images/favicon.png">
+</head>
+<body>
+    <h1>Python Quiz</h1>
+
+    <div id="bot-responses">
+        {% for response in bot_responses %}
+            <p>{{ response }}</p>
+        {% endfor %}
+    </div>
+
+    <form method="get">
+        <label for="message">Your Answer:</label>
+        <input type="text" id="message" name="message" required>
+        <button type="submit">Submit Answer</button>
+    </form>
+</body>
+</html>
