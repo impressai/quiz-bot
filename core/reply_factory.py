@@ -43,10 +43,45 @@ def get_next_question(current_question_id):
     return "dummy question", -1
 
 
-def generate_final_response(session):
-    '''
-    Creates a final result message including a score based on the answers
-    by the user for questions in the PYTHON_QUESTION_LIST.
-    '''
+from .constants import PYTHON_QUESTION_LIST
 
-    return "dummy result"
+def generate_final_response(session):
+   
+    # Collect all answers from the session
+    total_questions = len(PYTHON_QUESTION_LIST)
+    answers = {key: value for key, value in session.items() if key.startswith("answer_")}
+
+    # Calculate the number of questions answered
+    questions_answered = len(answers)
+    correctly_answered = 0  # Replace with actual correctness logic if available
+
+    # Example correctness logic (can be expanded with actual validation)
+    for key, answer in answers.items():
+        # Example: treat non-empty answers as correct for simplicity
+        if answer.strip():
+            correctly_answered += 1
+
+    # Calculate performance percentage
+    performance_percentage = (correctly_answered / total_questions) * 100
+
+    # Generate final message
+    result_message = (
+        f"Quiz Completed!\n"
+        f"Total Questions: {total_questions}\n"
+        f"Questions Answered: {questions_answered}\n"
+        f"Correct Answers: {correctly_answered}\n"
+        f"Your Performance: {performance_percentage:.2f}%\n"
+    )
+
+    # Add feedback based on performance
+    if performance_percentage == 100:
+        result_message += "Excellent work! You got everything right. 🎉"
+    elif performance_percentage >= 75:
+        result_message += "Great job! Keep up the good work. 😊"
+    elif performance_percentage >= 50:
+        result_message += "Good effort! Practice more to improve further. 👍"
+    else:
+        result_message += "Don't give up! Review the material and try again. 💪"
+
+    return result_message
+
