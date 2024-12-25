@@ -32,6 +32,16 @@ def record_current_answer(answer, current_question_id, session):
     '''
     Validates and stores the answer for the current question to django session.
     '''
+    # Validate the answer (ensure it's not empty or invalid)
+    if not answer:
+        return False, "Answer cannot be empty."
+
+    # Assuming current_question_id is an index to the question list
+    if current_question_id < 0 or current_question_id >= len(PYTHON_QUESTION_LIST):
+        return False, "Invalid question ID."
+
+    # Store the answer in the session (you could also store it in a database if needed)
+    session[f"answer_{current_question_id}"] = answer
     return True, ""
 
 
@@ -39,8 +49,16 @@ def get_next_question(current_question_id):
     '''
     Fetches the next question from the PYTHON_QUESTION_LIST based on the current_question_id.
     '''
+    # Get the next question ID (increment current_question_id)
+    next_question_id = current_question_id + 1
 
-    return "dummy question", -1
+    # If there are no more questions, return None
+    if next_question_id >= len(PYTHON_QUESTION_LIST):
+        return None, -1
+
+    # Get the next question
+    next_question = PYTHON_QUESTION_LIST[next_question_id]['question']
+    return next_question, next_question_id
 
 
 def generate_final_response(session):
@@ -48,5 +66,19 @@ def generate_final_response(session):
     Creates a final result message including a score based on the answers
     by the user for questions in the PYTHON_QUESTION_LIST.
     '''
+    correct_answers = 0
+    total_questions = len(PYTHON_QUESTION_LIST)
 
-    return "dummy result"
+    # Loop through the questions and compare stored answers with correct ones
+    for i, question in enumerate(PYTHON_QUESTION_LIST):
+        correct_answer = question.get('correct_answer')
+        user_answer = session.get(f"answer_{i}")
+        
+        if user_answer == correct_answer:
+            correct_answers += 1
+
+    # Calculate score and generate result
+    score = (correct_answers / total_questions) * 100
+    return f"You scored {correct_answers} out of {total_questions} ({score:.2f}%)."
+
+
