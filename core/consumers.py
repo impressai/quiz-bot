@@ -48,7 +48,8 @@ class ChatConsumer(WebsocketConsumer):
             user_message_obj
         )
 
-        bot_response_list = generate_bot_responses(user_message, self.scope['session'])
+        bot_response_list = generate_bot_responses(
+            user_message, self.scope['session'])
         for bot_response in bot_response_list:
             bot_response_obj = {
                 'type': 'chat_message',
