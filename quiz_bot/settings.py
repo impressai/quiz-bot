@@ -96,7 +96,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("redis", 6379)],
+            "hosts": [("127.0.0.1", 12000)],
         },
     },
 }
@@ -110,8 +110,8 @@ DATABASES = {
         'ENGINE': env('DB_ENGINE', 'django.db.backends.postgresql'),
         'NAME': env('DB_NAME', 'postgres'),
         'USER': env('DB_USER', 'postgres'),
-        'PASSWORD': env('DB_PASSWORD', 'password'),
-        'HOST': env('DB_HOST', 'db'),
+        'PASSWORD': env('DB_PASSWORD', 'kowsik'),
+        'HOST': env('DB_HOST', 'localhost'),
         'PORT': env('DB_PORT', '5432'),
     }
 }
